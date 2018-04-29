@@ -30,12 +30,14 @@
       <a href="/historia.html">Historia</a>
       <a href="/recomendaciones.html">Recomendaciones</a>
     </div>
+    <div id="alert-text"></div>
     <main id="map"></main>
     <footer>
       
     </footer>
     <script src="https://www.gstatic.com/firebasejs/4.13.0/firebase.js"></script>
     <script>
+      var alertColor;
       var markersArray = [];
       var data = {
         sender: null,
@@ -57,6 +59,7 @@
       var alertRef = firebase.database().ref('alert/');
       alertRef.on('value', function(snapshot) {
         var type = snapshot.val().type;
+        alertColor = type;
         $('#alert-top').css({'background-color': type});
       });
 
@@ -124,6 +127,23 @@
           markFound.setMap(null);
         });
       }
+
+      $('#alert-top').on('click', function(e) {
+        var greenText = 'Verde: El fenómeno natural es de baja amenaza para la ciudad, debemos estar en vigilacia.'
+        var yellowText = 'Amarilla: Existe un 50% de probabilidad de afectación por el fenómeno natural, hay un mayor grado de certeza que el peligro se produzca. Debemos empezar tomar precauciones verificando nuestras viviendas, reparando techos y paredes.'
+        var orangeText = 'Naranja: se activará ante el hecho que se intensifique el riesgo logrando alcanzar un nivel crítico, mayor del 75%, teniendo la probabilidad de producir daños serios, en este estado debemos lograr la participación de grupos especializados dentro de nuestra comunidad y tener ya nuestras viviendas protegidas y a nuestra familia en total alerta.'
+        var redText = 'Roja: se activará cuando la magnitud del evento ha logrado impactar de manera severa hasta producir una situación de desastre, debiéndose aplicar la atención de acuerdo al Plan de Emergencia, disponiendo de todos los recursos de la población y del Estado.'
+        if (alertColor == 'green') {
+          $('#alert-text').text(greenText);
+        } else if (alertColor == 'yellow') {
+          $('#alert-text').text(yellowText);
+        } else if (alertColor == 'orange') {
+          $('#alert-text').text(orangeText);
+        } else if (alertColor == 'red') {
+          $('#alert-text').text(redText);
+        }
+        $('#alert-text').toggle();
+      })
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDzy9ELEuoVcZTNv4pBrW0kfk1L0Ua4Xkc&libraries=visualization&callback=initMap">
     </script>

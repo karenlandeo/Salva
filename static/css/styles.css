@@ -130,6 +130,18 @@
 	border: 4px solid #FFF;
 }
 
+#alert-text {
+	position: absolute;
+	top: 100px;
+	left: 40px;
+	right: 40px;
+	background-color: #FFF;
+	z-index: 99999;
+	box-shadow: 0 2px 4px rgba(0,0,0,.15);
+	padding: 30px;
+	display: none;
+}
+
 #green {
 	background-color: green;
 }
