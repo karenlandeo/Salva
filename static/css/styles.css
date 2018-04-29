@@ -38,16 +38,22 @@
 	padding: 10px 20px;
 	margin-bottom: 10px;
 	border-radius: 2px;
+	font-weight: 100;
+}
+
+.sidebar-link img {
+	width: 30px;
 }
 
 .sidebar-link:hover {
 	color: rgba(255,255,255, .8);
-	background-color: rgba(0,0,0,.15);
+	background-color: rgba(0,0,0,.1);
 }
 
 .sidebar-link.active {
-	background-color: rgba(255,255,255,.25);
-	border-color: transparent;
+	background-color: rgba(255,255,255,1);
+	color: #0052CC;
+	font-weight: bold;
 }
 
 .app-header {
@@ -69,6 +75,30 @@
 	color: #FFF;
 }
 
+.app-menu {
+	position: fixed;
+	top: 50px;
+	left: 0;
+	right: 0;
+	height: 30px;
+	z-index: 9999;
+	background-color: #FFF;
+	padding: 5px 20px;
+	font-size: 12px;
+	text-transform: uppercase;
+	box-shadow: 0 2px 4px rgba(0,0,0,.15);
+}
+
+.app-menu a {
+	padding: 4px 5px;
+	color: #000;
+}
+
+.app-menu a.active {
+	font-weight: bold;
+	color: #0052CC;
+}
+
 .app-alert {
 	width: 30px;
 	height: 30px;
@@ -82,6 +112,11 @@
   -webkit-animation-duration: 1s;
   -webkit-animation-timing-function: linear;
   -webkit-animation-iteration-count: infinite;
+}
+
+.app-main {
+	padding: 30px;
+	padding-top: 100px;
 }
 
 .alert-circle {
@@ -111,6 +146,19 @@
 	background-color: red;
 }
 
+.video-responsive {
+	position: relative;
+	padding-bottom: 56.25%; /* 16:9 */
+	padding-top: 25px;
+	height: 0;
+}
+.video-responsive iframe {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
 
 @-moz-keyframes parpadeo{  
   0% { opacity: 1.0; }

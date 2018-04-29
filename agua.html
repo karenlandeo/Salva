@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="/static/css/main.css">
     <link rel="stylesheet" href="/static/css/styles.css">
     <script src="/static/js/jquery.js"></script>
+    <script src="/static/js/lodash.js"></script>
   </head>
   <body>
     <div class="sidebar">
@@ -26,7 +27,7 @@
         <div id="firebaseui-auth-container"></div>
       </header>
       <main id="sidebar-main" style="display: none;">
-        <a class="sidebar-link active" href="/admin.html">Agregar recorrido de huaico</a>
+        <a class="sidebar-link" href="/admin.html">Agregar recorrido de huaico</a>
         <a class="sidebar-link" href="/cercos.html">
           <img src="/static/img/cerco.png" alt="">
           Agregar cerco al mapa
@@ -35,7 +36,7 @@
           <img src="/static/img/refugio.png" alt="">
           Agregar puntos de refugio
         </a>
-        <a class="sidebar-link" href="/agua.html">
+        <a class="sidebar-link active" href="/agua.html">
           <img src="/static/img/agua.png" alt="">
           Agregar puntos de agua
         </a>
@@ -63,6 +64,7 @@
     <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/2.7.0/firebaseui.css" />
     <script src="https://www.gstatic.com/firebasejs/4.13.0/firebase.js"></script>
     <script>
+      var markersArray = [];
       var data = {
         sender: null,
         timestamp: null,
@@ -102,23 +104,37 @@
           disableDoubleClickZoom: true
         });
 
-        var infoBoxDiv = document.createElement('div');
-        var infoBox = new makeInfoBox(infoBoxDiv, map);
-        infoBoxDiv.index = 1;
-        map.controls[google.maps.ControlPosition.TOP_CENTER].push(infoBoxDiv);
-
         firebase.auth().onAuthStateChanged(function(user) {
           if (user) {
             // Logueado
             var isAnonymous = user.isAnonymous;
             var uid = user.uid;
             data.sender = uid;
+            var image = '/static/img/agua.png';
 
             map.addListener('click', function(e) {
               data.lat = e.latLng.lat();
               data.lng = e.latLng.lng();
               data.created = new Date();
-              firebase.database().ref('clicks/').push(data);
+              data.icon = image;
+              var itemKey = firebase.database().ref('markers/').push(data).key;
+              var marker = new google.maps.Marker({
+                position: {
+                  lat: e.latLng.lat(),
+                  lng: e.latLng.lng()
+                }, 
+                map: map,
+                icon: image
+              });
+              marker.key = itemKey
+              markersArray.push(marker);
+              google.maps.event.addListener(marker, 'click', function() {
+                marker.setMap(null);
+                var markFound = _.find(markersArray, function(o) { 
+                  return o.key === marker.key;
+                });
+                firebase.database().ref('markers/'+markFound.key).remove();
+              });
             });
 
             $('.alert-circle').on('click', function() {
@@ -145,28 +161,28 @@
           var point = new google.maps.LatLng(newPosition.lat, newPosition.lng);
           heatmap.getData().push(point);
         });
-      }
 
-      function makeInfoBox(controlDiv, map) {
-        // Set CSS for the control border.
-        var controlUI = document.createElement('div');
-        controlUI.style.boxShadow = 'rgba(0, 0, 0, 0.298039) 0px 1px 4px -1px';
-        controlUI.style.backgroundColor = '#fff';
-        controlUI.style.border = '2px solid #fff';
-        controlUI.style.borderRadius = '2px';
-        controlUI.style.marginBottom = '22px';
-        controlUI.style.marginTop = '10px';
-        controlUI.style.textAlign = 'center';
-        controlDiv.appendChild(controlUI);
-
-        // Set CSS for the control interior.
-        var controlText = document.createElement('div');
-        controlText.style.color = 'rgb(25,25,25)';
-        controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
-        controlText.style.fontSize = '100%';
-        controlText.style.padding = '6px';
-        controlText.innerText = 'The map shows all clicks made in the last 10 minutes.';
-        controlUI.appendChild(controlText);
+        var markersRef = database.ref('markers/');
+        markersRef.on('child_added', function(data) {
+          var newPosition = data.val();
+          var marker = new google.maps.Marker({
+            position: {
+              lat: newPosition.lat,
+              lng: newPosition.lng
+            }, 
+            map: map,
+            icon: newPosition.icon
+          });
+          marker.key = data.key;
+          markersArray.push(marker);
+          google.maps.event.addListener(marker, 'click', function() {
+            marker.setMap(null);
+            var markFound = _.find(markersArray, function(o) { 
+              return o.key === marker.key;
+            });
+            firebase.database().ref('markers/'+markFound.key).remove();
+          });
+        });
       }
 
       // ini app

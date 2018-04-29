@@ -25,6 +25,11 @@
       </a>
       <div id="alert-top" class="app-alert"></div>
     </header>
+    <div class="app-menu">
+      <a class="active" href="/">Mapa</a>
+      <a href="/historia.html">Historia</a>
+      <a href="/recomendaciones.html">Recomendaciones</a>
+    </div>
     <main id="map"></main>
     <footer>
       
@@ -117,7 +122,6 @@
             return o.key === data.key;
           });
           markFound.setMap(null);
-          console.log(newPosition);
         });
       }
     </script>

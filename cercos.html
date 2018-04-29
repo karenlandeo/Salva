@@ -27,10 +27,19 @@
         <div id="firebaseui-auth-container"></div>
       </header>
       <main id="sidebar-main" style="display: none;">
-        <a class="sidebar-link active" href="/admin">Agregar recorrido de huaico</a>
-        <a class="sidebar-link" href="/cercos">Agregar cerco al mapa</a>
-        <a class="sidebar-link" href="/ayuda">Registrar puntos de ayuda</a>
-        <a class="sidebar-link" href="/refugio">Registrar refugio</a>
+        <a class="sidebar-link" href="/admin.html">Agregar recorrido de huaico</a>
+        <a class="sidebar-link active" href="/cercos.html">
+          <img src="/static/img/cerco.png" alt="">
+          Agregar cerco al mapa
+        </a>
+        <a class="sidebar-link" href="/refugio.html">
+          <img src="/static/img/refugio.png" alt="">
+          Agregar puntos de refugio
+        </a>
+        <a class="sidebar-link" href="/agua.html">
+          <img src="/static/img/agua.png" alt="">
+          Agregar puntos de agua
+        </a>
 
         <br>
         <div id="alert">
@@ -101,7 +110,7 @@
             var isAnonymous = user.isAnonymous;
             var uid = user.uid;
             data.sender = uid;
-            var image = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';
+            var image = '/static/img/cerco.png';
 
             map.addListener('click', function(e) {
               data.lat = e.latLng.lat();
@@ -186,7 +195,7 @@
             var phoneNumber = user.phoneNumber;
             var providerData = user.providerData;
             user.getIdToken().then(function(accessToken) {
-              document.getElementById('login').textContent = 'Estas logueado con el número ' + phoneNumber;
+              document.getElementById('login').textContent = 'Estas logueado con el número ' + phoneNumber + ' y tienes permisos de Nivel 1.';
               document.getElementById('sidebar-main').style.display = 'block';
             });
           } else {
