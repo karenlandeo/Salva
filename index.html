@@ -15,10 +15,15 @@
     <meta charset="utf-8">
     <link rel="stylesheet" href="/static/css/main.css">
     <link rel="stylesheet" href="/static/css/styles.css">
+    <script src="/static/js/jquery.js"></script>
+    <script src="/static/js/lodash.js"></script>
   </head>
   <body>
     <header class="app-header">
-      
+      <a href="/">
+        <strong>Salva</strong>
+      </a>
+      <div id="alert-top" class="app-alert"></div>
     </header>
     <main id="map"></main>
     <footer>
@@ -26,6 +31,7 @@
     </footer>
     <script src="https://www.gstatic.com/firebasejs/4.13.0/firebase.js"></script>
     <script>
+      var markersArray = [];
       var data = {
         sender: null,
         timestamp: null,
@@ -42,6 +48,12 @@
       };
       firebase.initializeApp(config);
       var database = firebase.database();
+
+      var alertRef = firebase.database().ref('alert/');
+      alertRef.on('value', function(snapshot) {
+        var type = snapshot.val().type;
+        $('#alert-top').css({'background-color': type});
+      });
 
       firebase.auth().signInAnonymously().catch(function(error) {
         var errorCode = error.code;
@@ -81,6 +93,31 @@
           var newPosition = data.val();
           var point = new google.maps.LatLng(newPosition.lat, newPosition.lng);
           heatmap.getData().push(point);
+        });
+
+        var markersRef = database.ref('markers/');
+        markersRef.on('child_added', function(data) {
+          var newPosition = data.val();
+          var marker = new google.maps.Marker({
+            position: {
+              lat: newPosition.lat,
+              lng: newPosition.lng
+            }, 
+            map: map,
+            icon: newPosition.icon
+          });
+          marker.key = data.key;
+          markersArray.push(marker);
+        });
+
+        var markersRef = database.ref('markers/');
+        markersRef.on('child_removed', function(data) {
+          var newPosition = data.val();
+          var markFound = _.find(markersArray, function(o) { 
+            return o.key === data.key;
+          });
+          markFound.setMap(null);
+          console.log(newPosition);
         });
       }
     </script>

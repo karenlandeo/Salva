@@ -68,9 +68,6 @@
 
       // Handles click events on a map, and adds a new point to the Polyline.
       function addLatLng(event) {
-        console.log("event.lat", event.latLng.lat());
-        console.log("event.lng", event.latLng.lng());
-
         writeLatLgt(event.latLng.lat(), event.latLng.lng());
 
         var path = poly.getPath();
