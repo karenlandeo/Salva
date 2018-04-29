@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style type="text/css">
+      #map {
+        height: 100%;
+      }
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+    <meta name="viewport" content="width=device-width">
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="stylesheet" href="/static/css/styles.css">
+  </head>
+  <body>
+    <header class="app-header">
+      
+    </header>
+    <main id="map"></main>
+    <footer>
+      
+    </footer>
+    <script src="https://www.gstatic.com/firebasejs/4.13.0/firebase.js"></script>
+    <script>
+      var data = {
+        sender: null,
+        timestamp: null,
+        lat: null,
+        lng: null
+      };
+      var config = {
+        apiKey: "AIzaSyAx8vftg8OhXqkmE14k2PttH-eEbeegZmQ",
+        authDomain: "salva-1524947678629.firebaseapp.com",
+        databaseURL: "https://salva-1524947678629.firebaseio.com",
+        projectId: "salva-1524947678629",
+        storageBucket: "salva-1524947678629.appspot.com",
+        messagingSenderId: "995333411158"
+      };
+      firebase.initializeApp(config);
+      var database = firebase.database();
+
+      firebase.auth().signInAnonymously().catch(function(error) {
+        var errorCode = error.code;
+        var errorMessage = error.message;
+      });
+
+      firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+          var isAnonymous = user.isAnonymous;
+          var uid = user.uid;
+          data.sender = uid;
+        }
+      });
+
+      function initMap() {
+        var map = new google.maps.Map(document.getElementById('map'), {
+          center: {lat: -8.095657, lng: -79.019415},
+          zoom: 17,
+          styles: [{
+            featureType: 'poi',
+            stylers: [{ visibility: 'off' }]  // Turn off points of interest.
+          }, {
+            featureType: 'transit.station',
+            stylers: [{ visibility: 'off' }]  // Turn off bus stations, train stations, etc.
+          }],
+          disableDoubleClickZoom: true
+        });
+
+        var heatmap = new google.maps.visualization.HeatmapLayer({
+          data: [],
+          map: map,
+          radius: 16
+        });
+
+        var clicksRef = database.ref('clicks/');
+        clicksRef.on('child_added', function(data) {
+          var newPosition = data.val();
+          var point = new google.maps.LatLng(newPosition.lat, newPosition.lng);
+          heatmap.getData().push(point);
+        });
+      }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDzy9ELEuoVcZTNv4pBrW0kfk1L0Ua4Xkc&libraries=visualization&callback=initMap">
+    </script>
+    <script>
+    </script>
+  </body>
+</html>

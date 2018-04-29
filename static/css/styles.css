@@ -1,0 +1,61 @@
+.sidebar {
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	width: 300px;
+	background-color: #0052CC;
+	padding: 20px;
+	color: #FFF;
+}
+
+.main {
+	position: absolute;
+	top: 0;
+	left: 300px;
+	right: 0;
+	bottom: 0;
+}
+
+.sidebar-footer {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	/*height: 50px;*/
+	background-color: rgba(255,255,255,.25);
+	padding: 10px 20px;
+	font-weight: 100;
+	font-size: 14px;
+}
+
+.sidebar-link {
+	color: #FFF;
+	font-size: 14px;
+	display: block;
+	border: 1px solid #FFF;
+	padding: 10px 20px;
+	margin-bottom: 10px;
+	border-radius: 2px;
+}
+
+.sidebar-link:hover {
+	color: rgba(255,255,255, .8);
+	background-color: rgba(0,0,0,.15);
+}
+
+.sidebar-link.active {
+	background-color: rgba(255,255,255,.25);
+	border-color: transparent;
+}
+
+.app-header {
+	position: fixed;
+	height: 50px;
+	background-color: #000;
+	color: #FFF;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 9999;
+}
